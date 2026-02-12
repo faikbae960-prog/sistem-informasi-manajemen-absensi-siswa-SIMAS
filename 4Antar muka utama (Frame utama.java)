@@ -1,0 +1,50 @@
+import javax.swing.*;
+import java.awt.*;
+import java.sql.SQLException;
+import java.util.List;
+
+public class FrameUtama extends JFrame {
+    private SiswaDAO siswaDAO;
+
+    public FrameUtama() {
+        siswaDAO = new SiswaDAO();
+        setTitle("SIMAS - Manajemen Absensi Siswa");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Komponen UI
+        JLabel lblJudul = new JLabel("Daftar Siswa Kelas 1A", JLabel.CENTER);
+        lblJudul.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JTable tabelSiswa = new JTable();
+        JScrollPane scrollPane = new JScrollPane(tabelSiswa);
+
+        // Mengambil data siswa
+        try {
+            List<Siswa> daftarSiswa = siswaDAO.daftarSiswaPerKelas(1); // Id kelas 1
+            String[] kolom = {"ID Siswa", "Nama Siswa", "NIS", "ID Kelas"};
+            Object[][] data = new Object[daftarSiswa.size()][4];
+            for (int i = 0; i < daftarSiswa.size(); i++) {
+                data[i][0] = daftarSiswa.get(i).getIdSiswa();
+                data[i][1] = daftarSiswa.get(i).getNamaSiswa();
+                data[i][2] = daftarSiswa.get(i).getNis();
+                data[i][3] = daftarSiswa.get(i).getIdKelas();
+            }
+            tabelSiswa.setModel(new javax.swing.table.DefaultTableModel(data, kolom));
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error mengambil data: " + e.getMessage());
+        }
+
+        // Layout
+        setLayout(new BorderLayout());
+        add(lblJudul, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new FrameUtama().setVisible(true);
+        });
+    }
+}
