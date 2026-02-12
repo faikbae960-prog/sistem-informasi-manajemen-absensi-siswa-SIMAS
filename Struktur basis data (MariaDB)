@@ -1,0 +1,40 @@
+-- Membuat database
+CREATE DATABASE simas_db;
+USE simas_db;
+
+-- Tabel Kelas
+CREATE TABLE kelas (
+    id_kelas INT PRIMARY KEY AUTO_INCREMENT,
+    nama_kelas VARCHAR(50) NOT NULL,
+    tahun_ajaran VARCHAR(20) NOT NULL
+);
+
+-- Tabel Pengguna
+CREATE TABLE pengguna (
+    id_pengguna INT PRIMARY KEY AUTO_INCREMENT,
+    nama_lengkap VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    peran ENUM('ADMIN', 'GURU', 'ORANG_TUA') NOT NULL
+);
+
+-- Tabel Siswa
+CREATE TABLE siswa (
+    id_siswa INT PRIMARY KEY AUTO_INCREMENT,
+    nama_siswa VARCHAR(100) NOT NULL,
+    nis VARCHAR(20) NOT NULL UNIQUE,
+    id_kelas INT NOT NULL,
+    id_orang_tua INT,
+    FOREIGN KEY (id_kelas) REFERENCES kelas(id_kelas),
+    FOREIGN KEY (id_orang_tua) REFERENCES pengguna(id_pengguna)
+);
+
+-- Tabel Absensi
+CREATE TABLE absensi (
+    id_absensi INT PRIMARY KEY AUTO_INCREMENT,
+    id_siswa INT NOT NULL,
+    tanggal DATE NOT NULL,
+    status ENUM('HADIR', 'SAKIT', 'IZIN', 'ALPA') NOT NULL,
+    keterangan TEXT,
+    FOREIGN KEY (id_siswa) REFERENCES siswa(id_siswa)
+);
